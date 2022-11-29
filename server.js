@@ -1,58 +1,53 @@
-const express = require("express");
-const morgan = require("morgan");
-const MongoClient = require("mongodb").MongoClient;
+const http = require("http")
+const fs = require("fs")
 
-const MONGO_DB = "mongodb+srv://sangwoong:sangwoong03@cluster0.s1sjkdz.mongodb.net/wecode-prestudy?retryWrites=true&w=majority";
+const server = http.createServer();
 
-const app = express();
-const PORT = 8000;
-
-app.use(morgan("dev"));
-app.use(express.urlencoded({ extended: true }));
-
-const startServer = async () => {
-  MongoClient.connect(MONGO_DB, { useNewUrlParser: true }, (err, client) => {
-    db = client.db("wecode-prestudy")
-
-    if (err) {
-      return err;
-    }
-
-    app.post("/signin", (req, res) => {
-      res.send("로그인 완료");
-    });
+const httpRequestListener = (request, response) => {
+  const { url, method } = request
   
-    app.post("/signup", (req, res) => {
-      const { name, email, group, password } = req.body;
-      const data = {
-        name: name,
-        email: email,
-        group: group,
-        password: password
-      }
+  if (method === 'GET' && url === '/ping') {
+    response.writeHead(200, { 'Content-Type': 'application/json' })
+    response.end(JSON.stringify({message : 'pong'}))
+  }
 
-      db.collection('users').insertOne(data, (err, result) => {
-        console.log(result)
-      })
-      res.send("회원가입 완료")
+  if (method === 'GET' && url === '/') {
+    response.writeHead(200, { 'Content-Type': 'application/json' })
+    response.end(JSON.stringify({message : 'Hello! This is Main Page 🙌'}))
+  }
+
+  if (method === 'GET' && url === '/signin') {
+    const signinPage = fs.readFileSync('./signin.html')
+    response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
+    response.end(signinPage)
+  }
+
+  if (method === 'GET' && url === '/lists') {
+    const listPage = fs.readFileSync('./user-list.html')
+    response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
+    response.end(listPage)
+  }
+
+  if (method === 'POST' && url === '/signin') {
+    let body = ''
+    
+    request.on('data', (data) => {
+      body += data;
     })
-  });
 
-	app.get("/", (req, res) => {
-		res.send("안녕하세요 위코드 홈페이지입니다.");
-	});
+    request.on('end', () => {
+      const user = JSON.parse(body)
+      const { email, password, realEmail, realPassword } = user
+      if ( email === realEmail && password === realPassword ) {
+        response.writeHead(200, { 'Location': './user-list.html'})
+        response.end()
+      }
+    })
+  }  
+}
 
-	app.get("/signin", (req, res) => {
-		res.sendFile(__dirname + "/signin.html");
-	});
+server.on("request", httpRequestListener)
 
-	app.get("/signup", (req, res) => {
-		res.sendFile(__dirname + "/signup.html");
-	});
-
-	app.listen(PORT, () => {
-		console.log(`Listening on Port ${PORT}`);
-	});
-};
-
-startServer();
+server.listen(3000, '127.0.0.1' ,() => {
+  console.log(`Listening on Port 3000`);
+});

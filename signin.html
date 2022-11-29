@@ -22,25 +22,59 @@
       </div>   
     </div> 
     <div class="row mt-5">
-      <div class="col-12">
-        <form action="/login" method="POST">
-          <div class="form-group email"> 
-            <label class="mb-1"> 이메일 </label> 
-            <input type="text" class="form-control" name="email"> 
-          </div>  
-          <div class="form-group password"> 
-            <label class="mb-1"> 비밀번호 </label> 
-            <input type="password" class="form-control" name="password"> 
-          </div>  
-          <div class="form-group mt-5 w-100">
-            <button type="submit" class="btn btn-primary w-100 p-2" id="signin">
-                로그인
-            </button>
-          </div> 
-        </form> 
-      </div>
+      <form class="col-12">
+        <div class="form-group email"> 
+          <label class="mb-1"> 이메일 </label>
+          <input type="text" class="form-control fake-email" name="email">
+        </div>  
+        <div class="form-group password"> 
+          <label class="mb-1"> 비밀번호 </label> 
+          <input type="password" class="form-control fake-password" name="password"> 
+        </div>  
+        <div class="form-group mt-5 w-100">
+          <button class="btn btn-primary w-100 p-2" id="signin">
+              로그인
+          </button>
+        </div> 
+      </form>
     </div> 
   </div>
 </div>
 </body>
+
+<script>
+  const button = document.querySelector(".btn")
+  const Login = (e) => {
+    e.preventDefault();
+
+    const email = document.querySelector(".fake-email").value
+    const password = document.querySelector(".fake-password").value
+    
+    const emailValue = email.onlick = (e) => {
+
+    }
+    fetch('http://127.0.0.1:3000/signin', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userName: "wecode",
+        realEmail: "asdf",
+        userEmail: "wecodeZzang",
+        realPassword: "asdf",
+        hashedPassword: "$2@1213@bascewempowefj:345mioa/123.cdsmas21r5c",
+        email: email,
+        password: password
+      })
+    })
+    .then((res) => {
+      return res.status === 200
+      ? window.location.href = "/lists"
+      : alert("이메일 또는 비밀번호를 확인해주세요.")
+    })
+  }
+  
+  button.addEventListener('click', Login)
+</script>
 </html>
