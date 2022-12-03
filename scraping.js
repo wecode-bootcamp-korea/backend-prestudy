@@ -1,44 +1,43 @@
-// 과제로 구현해야하는 부분 2번
-const fs = require('fs');
-const axios = require('axios');
-const cheerio = require('cheerio');
+const (1 변수) = require("(1 모듈 이름)");
+const (1 변수) = require("(1 모듈 이름)");
+const (1 변수) = require("(1 모듈 이름)");
 
-const url = 'http://localhost:3000/lists';
+const url = '(2 아이피주소:포트번호/엔드포인트)';
 
-const scrapeData = async () => {
+const (3 함수이름) = async () => {
   try {
-    const { data } = await axios.get(url);
+    const { data } = await axios.( (4 메서드이름) )(url);
     const $ = cheerio.load(data);
 
-    const listItems = $('.table tbody tr');
+    const listItems = $( '(5 DOM SELECTOR)' );
     
     const users = [];
 
     listItems.each((idx, el) => {
       const user = {};
       
-      user.name = $(el).children('.name').text();
-      user.phoneNumber = $(el).children('.phoneNumber').text();
-      user.birthdate = $(el).children('.birthdate').text();
-      user.email = $(el).children('.email').text();
+      user.(6 key이름) = $(el).children( '(6 클래스 선택자)' ).text();
+      user.(6 key이름) = $(el).children( '(6 클래스 선택자)' ).text();
+      user.(6 key이름) = $(el).children( '(6 클래스 선택자)' ).text();
+      user.(6 key이름) = $(el).children( '(6 클래스 선택자)' ).text();
 
       users.push(user);
     });
 
-    const writeStream = fs.createWriteStream('user-info.csv');
+    const (7 변수이름) = fs.(7 메서드이름)( '(7 생성할 파일 이름)' );
 
-    writeStream.on('finish', () => {
-      console.log('FINISH!!');
+    (7 변수이름).on('(8 이벤트이름)', () => {
+      console.log('위코드 멘토 정보를 가져오는데 성공하였습니다.💻');
     });
 
     users.forEach((user) => {
-      const value = Object.keys(user)
+      const value = (9 메서드 이름)(user)
         .map((key) => {
-          return user[key]; 
+          return (9 객체 값); 
         })
         .join(',');
 
-      writeStream.write(`${value}\n`);
+      (7 변수이름).write( `(10 개행처리)` );
     });
 
     writeStream.end();
