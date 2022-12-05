@@ -1,3 +1,4 @@
+const fs = require("fs")
 const http = require("http");
 
 const server = http.createServer();
@@ -17,7 +18,7 @@ const httpRequestListener = function(request, response) {
   }
 
   if ( url === "/lists" && method === "GET" ) {
-    const listPage = fs.readFileSync('./user-list.html')
+    const listPage = fs.readFileSync('user-list.html')
     response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
     response.end(listPage)
   }
